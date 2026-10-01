@@ -5,7 +5,5 @@ import tailwind from '@astrojs/tailwind';
 export default defineConfig({
   site: 'https://arthur-c-vaelen.pages.dev',
   output: 'static',
-  integrations: [tailwind({
-    applyBaseStyles: false,
-  })],
+  integrations: [tailwind()],
 });
