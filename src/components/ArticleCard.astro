@@ -1,0 +1,58 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+  readingTime?: string;
+}
+
+const { post, readingTime } = Astro.props;
+const { title, description, pubDate, tags, coverImage } = post.data;
+
+const formattedDate = new Intl.DateTimeFormat('hu-HU', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+}).format(pubDate);
+---
+
+<article class="group relative rounded-xl border border-[#e6e6e0] dark:border-[#262930] bg-[#f4f4f2]/60 dark:bg-[#181a1f]/60 hover:bg-[#f4f4f2] dark:hover:bg-[#181a1f] p-5 sm:p-6 transition-all duration-200 hover:shadow-sm">
+  <div class="flex flex-col gap-3">
+    <!-- Meta row: Date & Reading time -->
+    <div class="flex items-center gap-3 text-xs text-txt-muted-light dark:text-txt-muted-dark font-mono">
+      <time datetime={pubDate.toISOString()}>
+        {formattedDate}
+      </time>
+      {readingTime && (
+        <>
+          <span>&bull;</span>
+          <span>{readingTime} olvasás</span>
+        </>
+      )}
+    </div>
+
+    <!-- Title -->
+    <h2 class="text-xl sm:text-2xl font-serif font-bold text-[#1a1d21] dark:text-[#f5f6f8] group-hover:text-accent dark:group-hover:text-accent-dark transition-colors tracking-tight">
+      <a href={`/blog/${post.slug}/`} class="focus:outline-none">
+        <span class="absolute inset-0 z-10" aria-hidden="true"></span>
+        {title}
+      </a>
+    </h2>
+
+    <!-- Description -->
+    <p class="text-sm text-txt-muted-light dark:text-txt-muted-dark leading-relaxed line-clamp-2">
+      {description}
+    </p>
+
+    <!-- Tags -->
+    {tags && tags.length > 0 && (
+      <div class="flex flex-wrap gap-1.5 pt-2 relative z-20">
+        {tags.map((tag) => (
+          <span class="text-[11px] px-2 py-0.5 rounded-full bg-accent-subtle dark:bg-accent-subtleDark text-accent dark:text-accent-dark font-medium border border-accent/15 dark:border-accent-dark/20">
+            #{tag}
+          </span>
+        ))}
+      </div>
+    )}
+  </div>
+</article>

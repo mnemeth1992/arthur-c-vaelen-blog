@@ -1,0 +1,19 @@
+{
+  "name": "arthur-c-vaelen-blog",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "Arthur C. Vaelen - Gondolatok, rendszerek és csendes megfigyelések",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/rss": "^4.0.11",
+    "@astrojs/tailwind": "^6.0.2",
+    "@tailwindcss/typography": "^0.5.16",
+    "astro": "^5.4.2",
+    "tailwindcss": "^3.4.17"
+  }
+}

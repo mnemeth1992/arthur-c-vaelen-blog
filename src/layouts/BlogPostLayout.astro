@@ -1,0 +1,102 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+  readingTime?: string;
+}
+
+const { post, readingTime } = Astro.props;
+const { title, description, pubDate, author, tags, coverImage } = post.data;
+
+const formattedDate = new Intl.DateTimeFormat('hu-HU', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+}).format(pubDate);
+---
+
+<BaseLayout title={`${title} – Arthur C. Vaelen`} description={description} image={coverImage} articleDate={pubDate.toISOString()}>
+  <article class="max-w-prose mx-auto">
+    <!-- Back navigation -->
+    <div class="mb-8">
+      <a
+        href="/"
+        class="inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-wider text-txt-muted-light dark:text-txt-muted-dark hover:text-accent dark:hover:text-accent-dark transition-colors"
+      >
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+        </svg>
+        <span>Vissza a cikkekhez</span>
+      </a>
+    </div>
+
+    <!-- Article Header -->
+    <header class="mb-10 space-y-4">
+      <div class="flex flex-wrap items-center gap-2 text-xs font-mono text-txt-muted-light dark:text-txt-muted-dark">
+        <time datetime={pubDate.toISOString()}>{formattedDate}</time>
+        <span>&bull;</span>
+        <span>{author}</span>
+        {readingTime && (
+          <>
+            <span>&bull;</span>
+            <span>{readingTime} olvasás</span>
+          </>
+        )}
+      </div>
+
+      <h1 class="text-3xl sm:text-4xl lg:text-[42px] font-serif font-bold text-[#1a1d21] dark:text-[#f5f6f8] tracking-tight leading-[1.25]">
+        {title}
+      </h1>
+
+      <p class="text-base sm:text-lg text-txt-muted-light dark:text-txt-muted-dark leading-relaxed font-light italic border-l-2 border-accent dark:border-accent-dark pl-4 py-1">
+        {description}
+      </p>
+
+      {tags && tags.length > 0 && (
+        <div class="flex flex-wrap gap-1.5 pt-2">
+          {tags.map((tag) => (
+            <span class="text-xs px-2.5 py-0.5 rounded-full bg-accent-subtle dark:bg-accent-subtleDark text-accent dark:text-accent-dark font-medium border border-accent/15 dark:border-accent-dark/20">
+              #{tag}
+            </span>
+          ))}
+        </div>
+      )}
+    </header>
+
+    <!-- Cover Image -->
+    {coverImage && (
+      <figure class="mb-12 rounded-xl overflow-hidden border border-[#e6e6e0] dark:border-[#262930] shadow-sm bg-[#f4f4f2] dark:bg-[#181a1f]">
+        <img
+          src={coverImage}
+          alt={title}
+          class="w-full h-auto aspect-[16/9] object-cover"
+          loading="eager"
+        />
+      </figure>
+    )}
+
+    <!-- Prose Content -->
+    <div class="prose prose-slate dark:prose-invert max-w-none text-[#22252a] dark:text-[#e2e4e9] prose-headings:font-serif prose-headings:tracking-tight prose-p:leading-relaxed prose-a:text-accent dark:prose-a:text-accent-dark prose-img:rounded-xl">
+      <slot />
+    </div>
+
+    <!-- Author Footnote / Sign-off -->
+    <div class="mt-16 pt-8 border-t border-[#e6e6e0] dark:border-[#262930] bg-[#f4f4f2]/40 dark:bg-[#181a1f]/40 rounded-xl p-6">
+      <div class="flex items-start gap-4">
+        <span class="w-10 h-10 rounded-full bg-accent dark:bg-accent-dark flex-shrink-0 flex items-center justify-center text-[#fbfbfa] text-sm font-serif font-bold">
+          AV
+        </span>
+        <div class="space-y-1">
+          <h4 class="font-serif font-bold text-sm text-[#1a1d21] dark:text-[#f5f6f8]">
+            Arthur C. Vaelen
+          </h4>
+          <p class="text-xs text-txt-muted-light dark:text-txt-muted-dark leading-relaxed">
+            Kutató, rendszerszemléletű gondolkodó és elkötelezett egyházi szolgáló. Az AuDHD mintázatait és a dogmákon túli csendes valóságot vizsgálja a tudomány és a mindennapi élet metszéspontjain.
+          </p>
+        </div>
+      </div>
+    </div>
+  </article>
+</BaseLayout>

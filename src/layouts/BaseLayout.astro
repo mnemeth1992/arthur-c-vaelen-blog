@@ -1,0 +1,86 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  articleDate?: string;
+}
+
+const {
+  title = 'Arthur C. Vaelen – Gondolatok, rendszerek és csend',
+  description = 'Arthur C. Vaelen személyes és kutatói blogja: rendszerszemlélet, AuDHD észlelés, tudomány és elkötelezett egyházi szolgálat.',
+  image = '/images/sample-cover.png',
+  articleDate,
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://arthur-c-vaelen.pages.dev');
+---
+
+<!doctype html>
+<html lang="hu">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonicalURL} />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- SEO Meta Tags -->
+    <title>{title}</title>
+    <meta name="title" content={title} />
+    <meta name="description" content={description} />
+    <meta name="author" content="Arthur C. Vaelen" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content={articleDate ? 'article' : 'website'} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(image, canonicalURL)} />
+    {articleDate && <meta property="article:published_time" content={articleDate} />}
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonicalURL} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={new URL(image, canonicalURL)} />
+
+    <!-- RSS feed link -->
+    <link rel="alternate" type="application/rss+xml" title="Arthur C. Vaelen RSS Feed" href="/rss.xml" />
+
+    <!-- Typography: Google Fonts (Merriweather & Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Anti-FOUC Theme Script -->
+    <script is:inline>
+      (function() {
+        try {
+          const stored = localStorage.getItem('theme');
+          if (stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        } catch (e) {
+          // ignore
+        }
+      })();
+    </script>
+  </head>
+  <body class="bg-[#fbfbfa] text-[#22252a] dark:bg-[#121316] dark:text-[#e2e4e9] antialiased min-h-screen flex flex-col font-sans selection:bg-[#2d5a43]/20 dark:selection:bg-[#4e8d6b]/30">
+    <Header />
+    <main class="flex-grow w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>
