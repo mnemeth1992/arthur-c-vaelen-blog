@@ -6,11 +6,9 @@ author: "Arthur C. Vaelen"
 tags: ["AuDHD", "rendszerszemlélet", "egyházi szolgálat", "tudomány", "csend"]
 coverImage: "/images/sample-cover.png"
 imagePrompt: "Minimalist conceptual digital art depicting delicate luminous geometric patterns and waveforms emerging from soft, calm atmospheric shadows into morning forest light, cinematic lighting, serene contemplative atmosphere, no text, no typography, no letters, no words, clean background, award-winning digital art."
-slug: "mintazatok-es-csend"
 draft: false
 ---
 
-![Borítókép](/images/sample-cover.png)
 
 A legtöbb ember számára a világ összefüggő háttérzaj, amelyből az akarat emel ki egy-egy fókuszált részletet. Számomra az észlelés ennek a fordítottja: a részletek érkeznek először, elemi erővel és azonnali gazdagsággal, s az elme fáradhatatlan feladata, hogy ezekből felfejtse a rejtőzködő architektúrát. Az AuDHD – az autizmus és a figyelemhiányos hiperaktivitás paradox kettőssége – nem diagnosztikai címke az életemben, hanem a valóság megértésének természetes prizmája. Ahol a neurotipikus tekintet lezárt tényeket lát, ott a divergens figyelem feszültséget, ritmust és láthatatlan kapcsolatokat tapint ki.
 

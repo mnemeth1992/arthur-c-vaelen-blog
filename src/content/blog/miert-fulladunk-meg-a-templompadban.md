@@ -6,11 +6,9 @@ author: "Arthur C. Vaelen"
 tags: ["AuDHD", "egyház", "neuronormativitás", "szenzoros túlterhelés", "teológia", "maszkolás"]
 coverImage: "/images/miert-fulladunk-meg-a-templompadban-cover.png"
 imagePrompt: "A poignant, minimalist and cinematic photograph of an empty, historic wooden church sanctuary. Shafts of morning volumetric light filter through tall cathedral windows, cutting through deep calm shadows and gentle floating dust motes. A single polished wooden pew stretches across the frame, conveying a profound sense of heavy silence, architectural discipline, and contemplative solitude. Atmospheric moody grading, quiet aesthetic, deep shadows, fine woodwork texture, Hasselblad medium format photography, award-winning composition, no text, no letters, no words, no typography, clean background."
-slug: "miert-fulladunk-meg-a-templompadban"
 draft: false
 ---
 
-![Borítókép](/images/miert-fulladunk-meg-a-templompadban-cover.png)
 
 A legtöbb ember számára a vasárnapi istentisztelet a belső elcsendesedés és a lelki feltöltődés magától értetődő színtere. Leülsz a fapadba vagy a kárpitozott székbe, elcsendesedsz, figyeled az igehirdető szavait, énekelsz a gyülekezettel, a végén pedig kezet fogsz a melletted ülőkkel, és a kijáratnál elbeszélgetsz a többiekkel egy gőzölgő kávé mellett. A ritmus kiszámítható, a szociális koreográfia olajozott. 
 
