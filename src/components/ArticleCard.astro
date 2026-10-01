@@ -7,7 +7,7 @@ interface Props {
 }
 
 const { post, readingTime } = Astro.props;
-const { title, description, pubDate, tags, coverImage } = post.data;
+const { title, description, pubDate, tags, coverImage, series } = post.data;
 
 const formattedDate = new Intl.DateTimeFormat('hu-HU', {
   year: 'numeric',
@@ -18,8 +18,14 @@ const formattedDate = new Intl.DateTimeFormat('hu-HU', {
 
 <article class="group relative rounded-xl border border-[#e6e6e0] dark:border-[#262930] bg-[#f4f4f2]/60 dark:bg-[#181a1f]/60 hover:bg-[#f4f4f2] dark:hover:bg-[#181a1f] p-5 sm:p-6 transition-all duration-200 hover:shadow-sm">
   <div class="flex flex-col gap-3">
-    <!-- Meta row: Date & Reading time -->
-    <div class="flex items-center gap-3 text-xs text-txt-muted-light dark:text-txt-muted-dark font-mono">
+    <!-- Meta row: Date, Reading time & Series Badge -->
+    <div class="flex flex-wrap items-center gap-2.5 text-xs text-txt-muted-light dark:text-txt-muted-dark font-mono">
+      {series && (
+        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-sans font-semibold tracking-wide bg-amber-500/15 text-amber-900 dark:bg-amber-400/15 dark:text-amber-200 border border-amber-600/30 dark:border-amber-400/30">
+          <span class="w-1.5 h-1.5 rounded-full bg-amber-600 dark:bg-amber-400"></span>
+          <span>Sorozat &bull; {series.part}. rész</span>
+        </span>
+      )}
       <time datetime={pubDate.toISOString()}>
         {formattedDate}
       </time>

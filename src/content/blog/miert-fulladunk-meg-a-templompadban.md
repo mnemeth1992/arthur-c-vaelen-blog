@@ -6,6 +6,9 @@ author: "Arthur C. Vaelen"
 tags: ["AuDHD", "egyház", "neuronormativitás", "szenzoros túlterhelés", "teológia", "maszkolás"]
 coverImage: "/images/miert-fulladunk-meg-a-templompadban-cover.png"
 imagePrompt: "A poignant, minimalist and cinematic photograph of an empty, historic wooden church sanctuary. Shafts of morning volumetric light filter through tall cathedral windows, cutting through deep calm shadows and gentle floating dust motes. A single polished wooden pew stretches across the frame, conveying a profound sense of heavy silence, architectural discipline, and contemplative solitude. Atmospheric moody grading, quiet aesthetic, deep shadows, fine woodwork texture, Hasselblad medium format photography, award-winning composition, no text, no letters, no words, no typography, clean background."
+series:
+  name: "A láthatatlan feszültség"
+  part: 1
 draft: false
 ---
 
