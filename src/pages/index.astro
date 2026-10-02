@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ArticleCard from '../components/ArticleCard.astro';
+import SeriesSidebar from '../components/SeriesSidebar.astro';
 import { getCollection } from 'astro:content';
 
 const posts = await getCollection('blog', ({ data }) => !data.draft);
@@ -16,9 +17,10 @@ function estimateReadingTime(content: string) {
 <BaseLayout
   title="Arthur C. Vaelen – Gondolatok, rendszerek és csend"
   description="Kutatási jegyzetek, mintázatfelismerés és a láthatatlan struktúrák keresése egy AuDHD-s és hívő szolgálói perspektíván keresztül."
+  maxWidth="max-w-6xl"
 >
   <!-- Hero Section -->
-  <section class="py-6 sm:py-10 border-b border-[#e6e6e0] dark:border-[#262930] mb-12">
+  <section class="py-6 sm:py-10 border-b border-[#e6e6e0] dark:border-[#262930] mb-10">
     <div class="space-y-4 max-w-2xl">
       <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-accent-subtle dark:bg-accent-subtleDark text-accent dark:text-accent-dark text-xs font-mono">
         <span class="w-1.5 h-1.5 rounded-full bg-accent dark:bg-accent-dark animate-pulse"></span>
@@ -41,18 +43,45 @@ function estimateReadingTime(content: string) {
     </div>
   </section>
 
-  <!-- Articles List Section -->
-  <section id="cikkek" class="space-y-6">
-    <div class="flex items-center justify-between">
-      <h2 class="text-xs font-mono uppercase tracking-widest text-txt-muted-light dark:text-txt-muted-dark">
-        Legutóbbi írások ({posts.length})
-      </h2>
-    </div>
+  <!-- Two-Column Layout: Main Feed & Series Sidebar -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+    <!-- Main Articles Section (8 cols on lg) -->
+    <section id="cikkek" class="lg:col-span-8 space-y-6">
+      <div class="flex items-center justify-between">
+        <h2 class="text-xs font-mono uppercase tracking-widest text-txt-muted-light dark:text-txt-muted-dark">
+          Legutóbbi írások ({posts.length})
+        </h2>
+      </div>
 
-    <div class="grid gap-6">
-      {posts.map((post) => (
-        <ArticleCard post={post} readingTime={estimateReadingTime(post.body || '')} />
-      ))}
-    </div>
-  </section>
+      <!-- Active Filter Banner (shown when a filter is applied) -->
+      <div
+        id="active-filter-banner"
+        class="hidden flex items-center justify-between p-3 rounded-lg border border-accent/25 bg-accent-subtle/70 dark:bg-accent-subtleDark/70 text-xs font-medium text-accent dark:text-accent-dark"
+      >
+        <div class="flex items-center gap-2">
+          <span>🔍</span>
+          <span>Szűrés aktív:</span>
+          <span id="active-filter-text" class="font-bold"></span>
+        </div>
+        <button
+          id="clear-filter-btn"
+          type="button"
+          class="underline hover:text-accent-hover dark:hover:text-accent-darkHover cursor-pointer font-mono"
+        >
+          Szűrés törlése &times;
+        </button>
+      </div>
+
+      <div class="grid gap-6" id="articles-grid">
+        {posts.map((post) => (
+          <ArticleCard post={post} readingTime={estimateReadingTime(post.body || '')} />
+        ))}
+      </div>
+    </section>
+
+    <!-- Sidebar: Series Selector & Navigation (4 cols on lg) -->
+    <aside class="lg:col-span-4 lg:sticky lg:top-24 space-y-6">
+      <SeriesSidebar posts={posts} />
+    </aside>
+  </div>
 </BaseLayout>

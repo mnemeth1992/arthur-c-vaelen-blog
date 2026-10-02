@@ -1,0 +1,289 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { SERIES_REGISTRY, getSeriesTheme } from '../utils/series';
+
+interface Props {
+  posts: CollectionEntry<'blog'>[];
+}
+
+const { posts } = Astro.props;
+
+// Group posts by series
+const seriesList = Object.values(SERIES_REGISTRY).map((theme) => {
+  const seriesPosts = posts
+    .filter((post) => {
+      const sName = post.data.series?.name;
+      if (!sName) return false;
+      return sName.toLowerCase().includes(theme.name.toLowerCase()) || theme.name.toLowerCase().includes(sName.toLowerCase());
+    })
+    .sort((a, b) => (a.data.series?.part || 0) - (b.data.series?.part || 0));
+
+  return {
+    theme,
+    posts: seriesPosts,
+    count: seriesPosts.length,
+  };
+}).filter((group) => group.count > 0);
+
+const standalonePosts = posts.filter((post) => !post.data.series);
+---
+
+<div class="space-y-6">
+  <!-- Sidebar Header & Filter Bar -->
+  <div class="rounded-xl border border-[#e6e6e0] dark:border-[#262930] bg-[#f4f4f2]/70 dark:bg-[#181a1f]/70 p-5 backdrop-blur-xs">
+    <div class="flex items-center justify-between mb-3">
+      <div class="flex items-center gap-2">
+        <span class="text-lg">📚</span>
+        <h3 class="font-serif font-bold text-base text-[#1a1d21] dark:text-[#f5f6f8]">
+          Cikksorozatok
+        </h3>
+      </div>
+      <span class="text-xs font-mono px-2 py-0.5 rounded-full bg-accent-subtle dark:bg-accent-subtleDark text-accent dark:text-accent-dark font-medium">
+        {seriesList.length} sorozat
+      </span>
+    </div>
+
+    <p class="text-xs text-txt-muted-light dark:text-txt-muted-dark leading-relaxed mb-4">
+      Strukturált, több részből álló kutatási írások és tematikus dekonstrukciók. Kattints a szűrőkre vagy közvetlenül egy-egy részre!
+    </p>
+
+    <!-- Quick filter pill buttons -->
+    <div class="flex flex-wrap gap-1.5" id="series-filter-controls">
+      <button
+        type="button"
+        data-filter="all"
+        class="series-filter-btn active inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-all duration-150 border border-accent/25 bg-accent text-white dark:bg-accent-dark dark:text-neutral-950 shadow-xs cursor-pointer"
+      >
+        <span>Összes</span>
+        <span class="text-[10px] opacity-80 font-mono">({posts.length})</span>
+      </button>
+
+      {seriesList.map(({ theme, count }) => (
+        <button
+          type="button"
+          data-filter={theme.id}
+          class={`series-filter-btn inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-all duration-150 border border-[#e6e6e0] dark:border-[#262930] bg-[#fbfbfa] dark:bg-[#121316] text-txt-muted-light dark:text-txt-muted-dark hover:border-current hover:${theme.accentText} cursor-pointer`}
+          data-active-class={`${theme.activeTab} border-transparent shadow-xs`}
+        >
+          <span>{theme.icon}</span>
+          <span>{theme.shortName}</span>
+          <span class="text-[10px] opacity-75 font-mono">({count})</span>
+        </button>
+      ))}
+
+      {standalonePosts.length > 0 && (
+        <button
+          type="button"
+          data-filter="standalone"
+          class="series-filter-btn inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium transition-all duration-150 border border-[#e6e6e0] dark:border-[#262930] bg-[#fbfbfa] dark:bg-[#121316] text-txt-muted-light dark:text-txt-muted-dark hover:text-accent dark:hover:text-accent-dark cursor-pointer"
+          data-active-class="bg-[#2d5a43] text-white dark:bg-[#4e8d6b] dark:text-neutral-950 border-transparent shadow-xs"
+        >
+          <span>🌱</span>
+          <span>Önálló írások</span>
+          <span class="text-[10px] opacity-75 font-mono">({standalonePosts.length})</span>
+        </button>
+      )}
+    </div>
+  </div>
+
+  <!-- Detailed Series Cards with Parts List -->
+  <div class="space-y-4">
+    {seriesList.map(({ theme, posts: sPosts, count }) => (
+      <div
+        class={`rounded-xl border ${theme.cardBorder} ${theme.cardBg} p-5 space-y-3.5 transition-all duration-200 hover:shadow-xs`}
+        id={`series-card-${theme.id}`}
+      >
+        <!-- Card Header -->
+        <div class="space-y-1.5">
+          <div class="flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2 min-w-0">
+              <span class="text-xl shrink-0 select-none">{theme.icon}</span>
+              <h4 class={`font-serif font-bold text-sm sm:text-base leading-snug truncate ${theme.boxTitle}`}>
+                {theme.name}
+              </h4>
+            </div>
+            <span class={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono font-bold shrink-0 ${theme.badgeBg} ${theme.badgeText} border ${theme.badgeBorder}`}>
+              {count} rész
+            </span>
+          </div>
+          <p class="text-xs text-txt-muted-light dark:text-txt-muted-dark leading-relaxed">
+            {theme.description}
+          </p>
+        </div>
+
+        <!-- Parts List -->
+        <div class="pt-2 border-t border-black/5 dark:border-white/5 space-y-2">
+          {sPosts.map((post) => (
+            <a
+              href={`/blog/${post.slug}/`}
+              class="group/item flex items-start gap-2.5 p-2 -mx-2 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+            >
+              <span class={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-mono font-bold shrink-0 mt-0.5 ${theme.numberBg}`}>
+                {post.data.series?.part}
+              </span>
+              <div class="min-w-0 flex-1">
+                <p class="text-xs font-serif font-medium text-[#1a1d21] dark:text-[#f5f6f8] group-hover/item:text-accent dark:group-hover/item:text-accent-dark line-clamp-2 leading-snug transition-colors">
+                  {post.data.title}
+                </p>
+              </div>
+              <span class="text-xs text-txt-muted-light dark:text-txt-muted-dark opacity-0 group-hover/item:opacity-100 transition-opacity shrink-0">
+                &rarr;
+              </span>
+            </a>
+          ))}
+        </div>
+
+        <!-- Direct Filter Action -->
+        <div class="pt-1 flex items-center justify-between text-[11px] font-mono">
+          <button
+            type="button"
+            data-trigger-filter={theme.id}
+            class={`inline-flex items-center gap-1 font-semibold ${theme.accentText} hover:underline cursor-pointer`}
+          >
+            <span>Csak ezen sorozat cikkei</span>
+            <span>&rarr;</span>
+          </button>
+        </div>
+      </div>
+    ))}
+
+    <!-- Standalone Essays Card (if any) -->
+    {standalonePosts.length > 0 && (
+      <div class="rounded-xl border border-[#e6e6e0] dark:border-[#262930] bg-[#f4f4f2]/40 dark:bg-[#181a1f]/40 p-4 space-y-2.5">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="text-base select-none">🌱</span>
+            <h4 class="font-serif font-bold text-xs uppercase tracking-wider text-txt-muted-light dark:text-txt-muted-dark">
+              Önálló tanulmányok & esszék
+            </h4>
+          </div>
+          <span class="text-[10px] font-mono text-txt-muted-light dark:text-txt-muted-dark">
+            {standalonePosts.length} írás
+          </span>
+        </div>
+        <div class="space-y-1.5">
+          {standalonePosts.map((post) => (
+            <a
+              href={`/blog/${post.slug}/`}
+              class="block p-1.5 -mx-1.5 rounded text-xs font-serif text-[#1a1d21] dark:text-[#f5f6f8] hover:text-accent dark:hover:text-accent-dark hover:bg-black/5 dark:hover:bg-white/5 transition-colors line-clamp-1"
+            >
+              • {post.data.title}
+            </a>
+          ))}
+        </div>
+      </div>
+    )}
+  </div>
+</div>
+
+<script>
+  function setupSeriesFiltering() {
+    const filterButtons = document.querySelectorAll<HTMLButtonElement>('.series-filter-btn');
+    const triggerButtons = document.querySelectorAll<HTMLButtonElement>('[data-trigger-filter]');
+    const articleCards = document.querySelectorAll<HTMLElement>('[data-article-card]');
+    const filterBanner = document.getElementById('active-filter-banner');
+    const filterBannerText = document.getElementById('active-filter-text');
+    const clearFilterBtn = document.getElementById('clear-filter-btn');
+
+    if (articleCards.length === 0) return;
+
+    function applyFilter(filterId: string) {
+      // 1. Update filter buttons active styles
+      filterButtons.forEach((btn) => {
+        const btnFilter = btn.getAttribute('data-filter');
+        const activeClassStr = btn.getAttribute('data-active-class') || 'bg-accent text-white dark:bg-accent-dark dark:text-neutral-950 border-transparent shadow-xs';
+        const activeClasses = activeClassStr.split(' ').filter(Boolean);
+
+        if (btnFilter === filterId) {
+          btn.classList.add('active', ...activeClasses);
+          btn.classList.remove('text-txt-muted-light', 'dark:text-txt-muted-dark', 'bg-[#fbfbfa]', 'dark:bg-[#121316]');
+        } else {
+          btn.classList.remove('active', ...activeClasses);
+          btn.classList.add('text-txt-muted-light', 'dark:text-txt-muted-dark', 'bg-[#fbfbfa]', 'dark:bg-[#121316]');
+        }
+      });
+
+      // 2. Filter article cards
+      let visibleCount = 0;
+      articleCards.forEach((card) => {
+        const cardSeriesId = card.getAttribute('data-series-id');
+        if (filterId === 'all' || cardSeriesId === filterId) {
+          card.style.display = '';
+          visibleCount++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      // 3. Update filter banner if present
+      if (filterBanner && filterBannerText) {
+        if (filterId === 'all') {
+          filterBanner.classList.add('hidden');
+        } else {
+          filterBanner.classList.remove('hidden');
+          let label = filterId;
+          const activeBtn = document.querySelector(`.series-filter-btn[data-filter="${filterId}"]`);
+          if (activeBtn) {
+            const spans = activeBtn.querySelectorAll('span');
+            if (spans.length >= 2) {
+              label = spans[0].textContent + ' ' + spans[1].textContent;
+            }
+          }
+          filterBannerText.textContent = `${label} (${visibleCount} írás)`;
+        }
+      }
+
+      // 4. Update URL without page refresh
+      const url = new URL(window.location.href);
+      if (filterId === 'all') {
+        url.searchParams.delete('sorozat');
+      } else {
+        url.searchParams.set('sorozat', filterId);
+      }
+      window.history.replaceState({}, '', url.toString());
+    }
+
+    // Attach click events to filter pill buttons
+    filterButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const filterId = btn.getAttribute('data-filter') || 'all';
+        applyFilter(filterId);
+      });
+    });
+
+    // Attach click events to "Csak ezen sorozat cikkei" buttons inside cards
+    triggerButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const filterId = btn.getAttribute('data-trigger-filter');
+        if (filterId) {
+          applyFilter(filterId);
+          // Scroll smoothly to articles section
+          const articlesSection = document.getElementById('cikkek');
+          if (articlesSection) {
+            articlesSection.scrollIntoView({ behavior: 'smooth' });
+          }
+        }
+      });
+    });
+
+    // Clear filter button in banner
+    if (clearFilterBtn) {
+      clearFilterBtn.addEventListener('click', () => {
+        applyFilter('all');
+      });
+    }
+
+    // Check URL param on initial page load
+    const initialParam = new URLSearchParams(window.location.search).get('sorozat');
+    if (initialParam) {
+      applyFilter(initialParam);
+    }
+  }
+
+  // Setup on page load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupSeriesFiltering);
+  } else {
+    setupSeriesFiltering();
+  }
+</script>

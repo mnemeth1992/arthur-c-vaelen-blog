@@ -8,6 +8,7 @@ interface Props {
   description?: string;
   image?: string;
   articleDate?: string;
+  maxWidth?: string;
 }
 
 const {
@@ -15,6 +16,7 @@ const {
   description = 'Arthur C. Vaelen személyes és kutatói blogja: rendszerszemlélet, AuDHD észlelés, tudomány és elkötelezett egyházi szolgálat.',
   image = '/images/sample-cover.png',
   articleDate,
+  maxWidth = 'max-w-4xl',
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://arthur-c-vaelen.pages.dev');
@@ -80,7 +82,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://arthur-c
   </head>
   <body class="bg-[#fbfbfa] text-[#22252a] dark:bg-[#121316] dark:text-[#e2e4e9] antialiased min-h-screen flex flex-col font-sans selection:bg-[#2d5a43]/20 dark:selection:bg-[#4e8d6b]/30">
     <Header />
-    <main class="flex-grow w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+    <main class={`flex-grow w-full ${maxWidth} mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12`}>
       <slot />
     </main>
     <Footer />
